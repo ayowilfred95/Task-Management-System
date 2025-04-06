@@ -1,7 +1,3 @@
-Here's a **structured and professional README** layout for your Task Management System. I’ve cleaned up formatting, removed redundancies, and organized the content into well-scoped sections with a table of contents for easier navigation.
-
----
-
 # 📝 Task Management System
 
 A web application that enables users and admins to efficiently create, manage, assign, and track tasks. This document includes setup instructions, API documentation, workflows, and design decisions.
@@ -27,7 +23,7 @@ A web application that enables users and admins to efficiently create, manage, a
 
 ## 🧭 Overview
 
-The Task Management System is a role-based task tracker built with RESTful API principles. Users can manage their own tasks, while administrators have full oversight over users and tasks.
+The Task Management System is a role-based task tracker built with RESTful API principles. Users can manage their own tasks, while administrators have full oversight over users tasks.
 
 ---
 
@@ -472,7 +468,7 @@ image: [file upload]
 
 ---
 
-### \*\*Get all tasks
+### **Get all tasks
 
 **GET** `/users/tasks`
 
@@ -589,9 +585,7 @@ image: [file upload]
         }
     }
 }
-
-
-
+````
 ---
 
 ### **Delete Task**
