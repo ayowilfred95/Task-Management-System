@@ -8,10 +8,9 @@ class TaskDAO extends BaseDAO {
   }
 
   /**
-   *  completionRate=
-   *         totalTasks/
-   *         completedTasks
-   *
+   * completionRate =
+   * totalTasks /
+   * completedTasks
    */
   fetchCompletedByCreatorOrAssignee = async (
     where = null,
@@ -45,15 +44,19 @@ class TaskDAO extends BaseDAO {
           [
             sequelize.literal(
               `IFNULL(
-                (SELECT COUNT(id) FROM tasks 
-                WHERE (tasks.CreatorId = User.id OR tasks.AssigneeId = User.id) 
-                AND tasks.status = 'COMPLETED' 
-                AND ISNULL(tasks.deletedAt)) /
-                NULLIF(
+                (
                   (SELECT COUNT(id) FROM tasks 
-                  WHERE (tasks.CreatorId = User.id OR tasks.AssigneeId = User.id) 
-                  AND ISNULL(tasks.deletedAt)), 0),
-                0
+                   WHERE (tasks.CreatorId = User.id OR tasks.AssigneeId = User.id) 
+                   AND tasks.status = 'COMPLETED' 
+                   AND ISNULL(tasks.deletedAt)
+                  ) * 100 /
+                  NULLIF(
+                    (SELECT COUNT(id) FROM tasks 
+                     WHERE (tasks.CreatorId = User.id OR tasks.AssigneeId = User.id) 
+                     AND ISNULL(tasks.deletedAt)
+                    ), 0
+                  )
+                ), 0
               )`
             ),
             "completionRate",
@@ -102,6 +105,29 @@ class TaskDAO extends BaseDAO {
         ? await User.scope(scope).findAndCountAll(data)
         : await User.findAndCountAll(data);
 
+      // Format completionRate to remove .0000
+      result.rows.forEach((user) => {
+        console.log("User Object: ", user.dataValues); // Log the entire user object
+
+        // Explicitly access the completionRate from the dataValues
+        const completionRate = user.dataValues.completionRate;
+
+        // Check if completionRate exists and is not null or undefined
+        if (completionRate !== undefined && completionRate !== null) {
+          // Ensure it's a number and format correctly
+          let formattedCompletionRate = parseFloat(completionRate).toFixed(2);
+
+          // Remove ".00" if the value is a whole number
+          formattedCompletionRate = formattedCompletionRate.replace(
+            /\.00$/,
+            ""
+          );
+
+          // Update user object with the formatted completion rate
+          user.dataValues.completionRate = formattedCompletionRate;
+        }
+      });
+
       // Paginate response format
       const pagination = {
         total: result.count,
@@ -109,6 +135,8 @@ class TaskDAO extends BaseDAO {
         page: page,
         rows: result.count,
       };
+
+      // console.log("result.rows...............:",result.rows);
 
       return {
         data: result.rows,

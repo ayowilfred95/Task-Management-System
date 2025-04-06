@@ -1,231 +1,245 @@
-# Task Management System
+Here's a **structured and professional README** layout for your Task Management System. I’ve cleaned up formatting, removed redundancies, and organized the content into well-scoped sections with a table of contents for easier navigation.
 
-## Overview
+---
 
-The Task Management System is a web application designed to help users manage their tasks efficiently. It provides features for creating, updating, and deleting tasks by users and admins. This README provides setup instructions, API documentation, an explanation of design decisions, and guidelines for integration testing.
+# 📝 Task Management System
 
-## Setup Instructions
+A web application that enables users and admins to efficiently create, manage, assign, and track tasks. This document includes setup instructions, API documentation, workflows, and design decisions.
+
+---
+
+## 📚 Table of Contents
+
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Tech Stack](#tech-stack)
+4. [Setup Instructions](#setup-instructions)
+5. [Environment Variables](#environment-variables)
+6. [API Documentation](#api-documentation)
+   - [Authentication](#authentication)
+   - [User Workflows](#user-workflows)
+   - [Admin Workflows](#admin-workflows)
+7. [Data Models](#data-models)
+8. [Example Use Cases](#example-use-cases)
+9. [Postman Docs](#postman-docs)
+
+---
+
+## 🧭 Overview
+
+The Task Management System is a role-based task tracker built with RESTful API principles. Users can manage their own tasks, while administrators have full oversight over users and tasks.
+
+---
+
+## ✨ Features
+
+- 👤 User Registration & Login (JWT)
+- 📝 Task Creation, Assignment, Update, Deletion
+- ✅ Task status updates (TODO, IN_PROGRESS, COMPLETED)
+- 🔐 Role-based access control
+- 📎 File/image upload for tasks
+- 📊 Admin control over all tasks
+
+---
+
+## 🛠 Tech Stack
+
+- **Backend**: Node.js, Express
+- **Database**: MySQL (via Sequelize ORM)
+- **Auth**: JWT Token-based
+- **Dev Tools**: Docker, Postman
+
+---
+
+## 🚀 Setup Instructions
 
 ### Prerequisites
 
-- **Docker**: Ensure that Docker is installed on your machine. You need Docker to run the MySQL database. You can download it from [Docker's official website](https://www.docker.com/get-started).
-- **Node.js**: Version 14 or higher.
-- **npm**: Node Package Manager.
+- [Docker](https://www.docker.com/get-started)
+- Node.js (v14+)
+- npm (Node Package Manager)
 
-### Installation Steps
+### Installation
 
 1. **Clone the Repository**
 
-   ```bash
-   git clone https://github.com/ayowilfred95/Task-Management-System.git
-   cd Task-Management-System
-   ```
-
-2. **Set Up the Database Using Docker**
-
-   - There is a file called `docker-compose.yml` in the root directory. It contains the YAML configuration for the MySQL database.
-   - Run the following command to start the MySQL database:
-   - NOTE: You need to have Docker installed and running on your machine to run this command.
-
-   ```bash
-   docker compose up -d
-   ```
-
-   This command will start the database in detached mode.
-
-3. **Install Application Dependencies**
-   ```bash
-   npm install
-   ```
-4. **Run Tests**
-
-   ```bash
-   npm test
-   ```
-
-5. **Set Up Environment Variables**
-   Create a `.env` file in the root directory and add the following variables:
-   ```plaintext
-   APP_PORT=4000
-   APP_SECURE_KEY=taskmanagement123@#$%!!*&*&^$#etc
-   DB_USER=task-management
-   DB_PASS=task-management
-   DB_NAME=task-management
-   DB_HOST=localhost
-   DB_CHARSET=utf8mb4
-   DB_COLLATE=utf8mb4_unicode_ci
-   ```
-   **NOTE**:
-
-- You can add any value for the variables and Incase you have a database you can use, set the database credentials with the database you want to use. In that case, instead of DB_USER, DB_PASS, DB_NAME, DB_HOST, DB_CHARSET, DB_COLLATE, use the credentials of the database you want to use.
-
-6. **Run Database Migrations**
-   After the database is up and running, run the migrations to set up the database schema:
-   ```bash
-   npx sequelize-cli db:migrate
-   ```
-   **NOTE**:
-
-- There are two tables that will be created: `users` and `tasks`.
-- The `users` table will be used for authentication and authorization.
-- The `tasks` table will be used to store the tasks created by users.
-
-7. **Start the Application**
-
-   ```bash
-   npm run start
-   ```
-
-8. **Access the Application**
-   Open your browser and navigate to `http://localhost:4000`.
-
-
-### Endpoints
-
-# 📘 Task Management System API Documentation
-
-## 1. API Overview
-
-### 🎯 Purpose & Scope
-
-The **Task Management System API** is a RESTful API designed to streamline task tracking and user administration. The API supports both **regular users** (who can manage personal tasks and also assign tasks to other users) and **administrators** (who can manage all users tasks).
-
-**Key functionalities include:**
-
-- **User Management**: Register, log in, and manage your personal task list.
-- **Task Operations**: Create, update, and delete tasks, along with status tracking.
-- **Admin Control**: View all users tasks, view tasks for specific users,assign tasks to users and delete users if necessary.
-
-### ✅ Solution Highlights
-
-- **User Tasks**: Users can manage their own task lifecycle — from creation to deletion.
-- **Authentication**: Role-based access using token authentication.
-- **Admin Oversight**: Admins can manage platform users and inspect any user's tasks.
-
----
-
-## 🔗 Full Postman API Reference
-Postman was used to document the API.
-For complete request examples and responses,please visit the postman full docs:  
-👉 [Postman Docs](https://documenter.getpostman.com/view/28637839/2sB2cUBi1F)
-
----
-
-## 2. Workflows
-
-### 🔄 Workflow Scenarios
-
-#### 1. User Registers and Manages Tasks
-
-1. A new user sends a `POST` request to `/auth/register`.
-2. Logs in using `/auth/login` to get a JWT token.
-3. Creates a task using `POST /users/tasks` with the token.
-4. Retrieves tasks via `GET /users/tasks`.
-5. Updates or deletes tasks using `PUT` or `DELETE` on `/users/tasks/:id`.
-6. Assign a user task: `POST /users/tasks/:id/assign`.
-7. Update a user task: `PUT /users/tasks/:id/update`.
-8. Update a user task status: `PUT /users/tasks/:id/update-status`.
-
-#### 2. Admin Logs In and Manages Tasks
-
-1. Admin logs in through `POST auth/login`.
-2. View all users tasks: `GET /admins/tasks`.
-3. Views all tasks for a user: `GET /admins/tasks/:id`.
-4. Delete a user task: `DELETE /admins/tasks/:id`.
-5. Assign a user task: `POST /admins/tasks/:id/assign`.
-6. Update a user task: `PUT /admins/tasks/:id/update`.
-7. Update a user task status: `PUT /admins/tasks/:id/update-status`.
-
----
-
-## 3. Detailed API Specifications
-
-### 🌐 Base URL
-
-```
-https://localhost:4000/v1
+```bash
+git clone https://github.com/ayowilfred95/Task-Management-System.git
+cd Task-Management-System
 ```
 
-All endpoints are prefixed with this base URL.
+2. **Start MySQL Database with Docker**
+
+```bash
+docker compose up -d
+```
+
+This uses the `docker-compose.yml` in the root directory to spin up the MySQL container.
+
+3. **Install Dependencies**
+
+```bash
+npm install
+```
+
+4. **Configure Environment Variables**
+
+Create a `.env` file in the root directory and add the environment variables listed [here](#environment-variables).
+
+5. **Run Migrations**
+
+```bash
+npx sequelize-cli db:migrate
+```
+
+6. **Run Tests (Optional)**
+
+```bash
+npm test
+```
+
+7. **Start the Server**
+
+```bash
+npm run start
+```
+
+Visit: `http://localhost:4000`
 
 ---
 
-### 🧱 Resource Models
+## ⚙️ Environment Variables
 
-#### 🧍 User
+```env
+APP_PORT=4000
+APP_SECURE_KEY=taskmanagement123@#$%!!*&*&^$#etc
+DB_USER=task-management
+DB_PASS=task-management
+DB_NAME=task-management
+DB_HOST=localhost
+DB_CHARSET=utf8mb4
+DB_COLLATE=utf8mb4_unicode_ci
+```
 
-| Field       | Type    | Required | Description          |
-| ----------- | ------- | -------- | -------------------- |
-| `firstName` | String  | Yes      | First name           |
-| `lastName`  | String  | Yes      | Last name            |
-| `email`     | String  | Yes      | Must be unique       |
-| `password`  | String  | Yes      | Minimum 6 characters |
-| `isRegular` | Boolean | Yes      | Default: true        |
-| `isAdmin`   | Boolean | Yes      | Default: false       |
-
-#### ✅ Task
-
-| Field         | Type    | Required | Description                                 |
-| ------------- | ------- | -------- | ------------------------------------------- |
-| `title`       | String  | Yes      | Brief title of the task                     |
-| `description` | String  | No       | Details about the task                      |
-| `dueDate`     | String  | No       | ISO date format                             |
-| `status`      | String  | No       | Options: `TODO`, `IN_PROGRESS`, `COMPLETED` |
-| `priority`    | String  | No       | Options: `LOW`, `MEDIUM`, `HIGH`            |
-| `image`       | String  | No       | URL of the task image                       |
-| `assigneeId`  | Integer | No       | ID of the user assigned to the task         |
-| `creatorId`   | Integer | Yes      | ID of the user who created the task         |
+> You can adjust these based on your local or cloud database config.
 
 ---
 
-### 🧪 CRUD Endpoints
+## 📘 API Documentation
 
-#### 👤 Authentication Endpoints
+All endpoints are prefixed with:
 
-- `POST /auth/register`: Register a new user whether admin or regular user
-- `POST /auth/login`: Authenticate user and receive token
-
-#### 📝 User Task Endpoints
-
-- `POST /users/tasks/create`: Create a task
-- `GET /users/tasks`: Get all tasks for logged-in user
-- `GET /users/tasks/{taskId}`: Get a specific task
-- `PUT /users/tasks/{taskId}/update`: Update a task
-- `PUT /users/tasks/{taskId}/update-status`: Update a task status
-- `DELETE /users/tasks/{taskId}/delete`: Delete a task
-- `POST /users/tasks/{taskId}/assign`: Assign a task to another user
-
-#### 🔐 Admin Endpoints
-
-- `GET /admins/tasks`: View all users tasks
-- `GET /admins/tasks/{taskId}`: View tasks for a specific user
-- `DELETE /admins/tasks/{taskId}/delete`: Delete a user and their tasks
-- `POST /admins/tasks/{taskId}/assign`: Assign a task to a user
-- `GET /admins/users/{userId}/assign-tasks`: Get a task assigned to a user
+```
+http://localhost:4000/v1
+```
 
 ---
 
-### Endpoint Specifications
+### 🔐 Authentication
 
-#### Create User
+| Endpoint       | Method | Description             |
+| -------------- | ------ | ----------------------- |
+| /auth/register | POST   | Register new user/admin |
+| /auth/login    | POST   | Login and get JWT token |
 
-- URL: /api/v1/auth/register
-- Method: POST
-- Request Body:
+---
+
+### 🔄 User Workflows
+
+#### Task Endpoints
+
+| Endpoint                       | Method | Description                 |
+| ------------------------------ | ------ | --------------------------- |
+| /users/tasks                   | GET    | Get all tasks for user      |
+| /users/tasks/:id               | GET    | Get task by ID              |
+| /users/tasks/create            | POST   | Create task                 |
+| /users/tasks/:id/update        | PUT    | Update task                 |
+| /users/tasks/:id/update-status | PUT    | Update task status          |
+| /users/tasks/:id/delete        | DELETE | Delete task                 |
+| /users/tasks/:id/assign        | POST   | Assign task to another user |
+
+---
+
+### 🛡️ Admin Workflows
+
+| Endpoint                           | Method | Description                           |
+| ---------------------------------- | ------ | ------------------------------------- |
+| /admins/tasks                      | GET    | Get all tasks                         |
+| /admins/tasks/:id                  | GET    | Get task by ID                        |
+| /admins/tasks/:id/update           | PUT    | Update task                           |
+| /admins/tasks/:id/delete           | DELETE | Delete task                           |
+| /admins/tasks/:id/assign           | POST   | Assign task to user                   |
+| /admins/users/:userId/assign-tasks | GET    | Get tasks assigned to a specific user |
+
+> All routes require a valid JWT token passed as `Authorization: Bearer <token>`.
+
+---
+
+## 🧱 Data Models
+
+### 🧍 User
+
+| Field     | Type    | Required | Notes           |
+| --------- | ------- | -------- | --------------- |
+| firstName | String  | ✅       |                 |
+| lastName  | String  | ✅       |                 |
+| email     | String  | ✅       | Unique          |
+| password  | String  | ✅       | >= 6 characters |
+| isAdmin   | Boolean | ✅       | Default: false  |
+| isRegular | Boolean | ✅       | Default: true   |
+
+### ✅ Task
+
+| Field       | Type    | Required | Notes                         |
+| ----------- | ------- | -------- | ----------------------------- |
+| title       | String  | ✅       |                               |
+| description | String  | ✅       |                               |
+| dueDate     | String  | ✅       | ISO format                    |
+| status      | String  | ✅       | TODO, IN_PROGRESS, COMPLETED  |
+| priority    | String  | ✅       | LOW, MEDIUM, HIGH             |
+| image       | String  | ❌       | URL or filename               |
+| assigneeId  | Integer | ✅       | ID of the assigned user       |
+| creatorId   | Integer | ✅       | ID of the user who created it |
+
+---
+
+## 🔍 Example Use Cases
+
+| Role  | Action                        | Endpoint                           |
+| ----- | ----------------------------- | ---------------------------------- |
+| User  | Register                      | POST /auth/register                |
+| User  | Add Task                      | POST /users/tasks/create           |
+| Admin | View all tasks                | GET /admins/tasks                  |
+| Admin | Get assigned tasks for a user | GET /admins/users/:id/assign-tasks |
+
+---
+
+## 🔗 Postman Docs
+
+A full collection with examples and responses is available here:  
+👉 [View Postman Documentation](https://documenter.getpostman.com/view/28637839/2sB2cUBi1F)
+
+---
+
+## 🔐 Authentication
+
+### **Register User/Admin**
+
+**POST** `/auth/register`
+
+#### 🔸 Request Body
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "@Password123",
   "firstName": "Ayomide",
-  "lastName": "Adeyemi",
+  "lastName": "Williams",
+  "email": "task.admin1@gmail.com",
+  "password": "@SecurePass123",
   "role": "ADMIN"
 }
 ```
 
-- Response:
-  - 200 Created: Returns the created user.
-  - 400 Bad Request: If validation fails.
+#### ✅ Response
 
 ```json
 {
@@ -233,9 +247,9 @@ All endpoints are prefixed with this base URL.
   "data": {
     "user": {
       "id": 1,
-      "firstName": "Admin",
+      "firstName": "Admin1",
       "lastName": "Task",
-      "email": "task.admin@gmail.com",
+      "email": "task.admin1@gmail.com",
       "isRegular": false,
       "isAdmin": true,
       "updatedAt": "2025-04-05T20:37:21.946Z",
@@ -247,28 +261,62 @@ All endpoints are prefixed with this base URL.
 }
 ```
 
-#### Create Task
+---
 
-```
-Authorization: Bearer <token>
-```
+### **Login**
 
-- URL: /api/v1/user/tasks/create
-- Method: POST
-- Request Body:
+**POST** `/auth/login`
+
+#### 🔸 Request Body
 
 ```json
 {
-  "title": "Task Title",
-  "description": "Task Description",
-  "dueDate": "2023-12-31",
-  "priority": "LOW",
-  "image": "image-file"
+  "email": "task.admin1@gmail.com",
+  "password": "@SecurePass123"
 }
 ```
 
-- Response:
-  - 200 Created: Returns the created task.
+#### ✅ Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": 1,
+      "firstName": "Admin1",
+      "lastName": "Task",
+      "email": "task.admin1@gmail.com",
+      "isRegular": false,
+      "isAdmin": true,
+      "createdAt": "2025-04-05T20:37:21.000Z",
+      "updatedAt": "2025-04-05T20:37:21.000Z"
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInRva2VuVHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc0MzkwMjU0NCwiZXhwIjoxNzQzOTg4OTQ0fQ.txpp4tM2iX27fKAoGxbNgvl3ii5usWr9AjPbGJs_kDY"
+  },
+  "message": "Login successfull"
+}
+```
+
+---
+
+## 🧍 User Endpoints
+
+### **Create Task**
+
+**POST** `/users/tasks`
+
+#### 🔸 Request (with file upload using `form-data`)
+
+```
+title: "Write Report"
+description: "Write the weekly performance report"
+priority: "HIGH"
+dueDate: "2025-04-10"
+image: [file upload]
+```
+
+#### ✅ Response
 
 ```json
 {
@@ -291,25 +339,21 @@ Authorization: Bearer <token>
 }
 ```
 
-- 400 Bad Request: If validation fails.
+---
+
+### **Update Task Status**
+
+**PUT** `/users/tasks/:id/update-status`
+
+#### 🔸 Request Body
 
 ```json
 {
-  "success": false,
-  "message": "Due date cannot be in the past"
+  "status": "IN_PROGRESS"
 }
 ```
 
-#### Get Task
-
-```
-Authorization: Bearer <token>
-```
-
-- URL: /api/v1/user/tasks/{taskId}
-- Method: GET
-- Response:
-  - 200 OK: Returns the task details.
+#### ✅ Response
 
 ```json
 {
@@ -323,116 +367,688 @@ Authorization: Bearer <token>
       "title": "Backend Development",
       "description": "Create endpoint for Task Management System CRUD API'S",
       "priority": "HIGH",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "dueDate": "2025-04-10T00:00:00.000Z",
       "createdAt": "2025-04-05T20:45:47.000Z",
-      "updatedAt": "2025-04-05T20:49:11.000Z",
-      "deletedAt": null,
-      "assignee": {
-        "id": 2,
-        "firstName": "Admin2",
-        "lastName": "Task",
-        "email": "task.admin2@gmail.com",
-        "isRegular": false,
-        "isAdmin": true,
-        "createdAt": "2025-04-05T20:38:15.000Z",
-        "updatedAt": "2025-04-05T20:38:15.000Z"
-      }
+      "updatedAt": "2025-04-05T20:51:27.000Z",
+      "deletedAt": null
     }
   }
 }
 ```
 
-- 404 Not Found: If the task ID is invalid.
+---
+
+### **Assign Task to Another User**
+
+**POST** `/users/tasks/:id/assign`
+
+#### 🔸 Request Body
 
 ```json
 {
-  "success": false,
-  "message": "task not found"
+  "assigneeId": 4
+}
+```
+
+#### ✅ Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "task": {
+      "id": 14,
+      "assigneeId": 4,
+      "creatorId": 5,
+      "image": "image-1743901143059-Adeyemi_Ayomide_coding certification.jpg",
+      "title": "Backend Development",
+      "description": "Create endpoint for Task Management System CRUD API'S",
+      "priority": "HIGH",
+      "status": "TODO",
+      "dueDate": "2025-04-10T00:00:00.000Z",
+      "createdAt": "2025-04-06T00:59:03.000Z",
+      "updatedAt": "2025-04-06T01:10:38.000Z",
+      "deletedAt": null
+    },
+    "message": "Email notification sent successfully to User3 Task"
+  }
 }
 ```
 
 ---
 
-### 🧪 CRUD Operations
+### **Get Assigned Tasks**
 
-#### User
+**GET** `/users/tasks/assign-tasks`
 
-- `POST /api/v1/auth/register`: Register a new user
-- `POST /api/v1/auth/login`: Authenticate user and receive token
+#### 🔸 Query Parameters
 
-#### User Task
-
-- `POST /api/v1/users/tasks/create`: Create a new task
-- `GET /api/v1/users/tasks`: Get all tasks for logged-in user
-- `GET /api/v1/users/tasks/{taskId}`: Get a specific task
-- `PUT /api/v1/users/tasks/{taskId}/update`: Update a task
-- `PUT /api/v1/users/tasks/{taskId}/update-status`: Update a task status
-- `DELETE /api/v1/users/tasks/{taskId}/delete`: Delete a task
-- `POST /api/v1/tasks/{taskId}/assign`: Assign a task to another user
-
-#### Specialized Endpoints
-
-- `GET /api/v1/tasks/users/{userId}/assign-tasks`: Get assigned tasks for a specific user
-- `PATCH /api/v1/tasks/{taskId}/status`: Update task status
-
----
-
-### 🔐 Authentication
-
-- **JWT Tokens** are required in the `Authorization` header for both user and admin requests:
-
-```
-Authorization: Bearer <token>
+```js
+{
+  "page": 1,
+  "limit": 10
+}
 ```
 
-#### Delete User
+#### ✅ Response
 
-- URL: /api/v1/users/{userId}
-- Method: DELETE
-- Response:
-  - 200 OK: Returns the deleted user.
-  - 404 Not Found: If the user ID is invalid.
-
-#### Create Task
-
-- URL: /api/v1/tasks
-
-Read Task: GET /api/v1/tasks/{taskId}
-
-Update Task: PUT /api/v1/tasks/{taskId}
-
-Delete Task: DELETE /api/v1/tasks/{taskId}
-
-Specialized Endpoints
-Get Tasks by User: GET /api/v1/users/{userId}/tasks
-Update Task Status: PATCH /api/v1/tasks/{taskId}/status
-
-## 🔐 Authentication
-
-- **JWT Tokens** are required in the `Authorization` header for both user and admin requests:
-
-```
-Authorization: Bearer <token>
+```json
+{
+  "success": true,
+  "data": {
+    "tasks": [
+      {
+        "id": 1,
+        "assigneeId": 4,
+        "creatorId": 3,
+        "image": "image-1743886442669-Adeyemi_Ayomide_aws cloud certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "LOW",
+        "status": "IN_PROGRESS",
+        "dueDate": "2025-04-12T00:00:00.000Z",
+        "createdAt": "2025-04-05T20:45:47.000Z",
+        "updatedAt": "2025-04-06T00:02:12.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 3,
+          "firstName": "User1",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        }
+      }
+    ],
+    "pagination": {
+      "limit": 10,
+      "page": 1,
+      "pages": 1,
+      "rows": 1
+    }
+  }
+}
 ```
 
 ---
 
-## 🧭 Example Use Case
+### \*\*Get all tasks
 
-| Role  | Action                            | Endpoint                                   |
-| ----- | --------------------------------- | ------------------------------------------ |
-| User  | Register                          | `POST /auth/register`                      |
-| User  | Add Task                          | `POST /user/tasks/create`                  |
-| Admin | View all tasks                    | `GET /admins/tasks`                        |
-| Admin | Get all assigned tasks for a user | `GET /admins/tasks/users/:id/assign-tasks` |
+**GET** `/users/tasks`
+
+#### 🔸 Query Parameters
+
+```js
+{
+  "q[status]": "TODO",
+  "q[priority]": "HIGH",
+  "q[dueDate]": "2025-04-10",
+  "order[createdAt]": "DESC",
+  "page": 1,
+  "limit": 10
+}
+```
+
+#### ✅ Response
+
+````json
+{
+    "success": true,
+    "data": {
+        "tasks": [
+            {
+                "id": 14,
+                "assigneeId": 5,
+                "creatorId": 4,
+                "image": "image-1743901143059-Adeyemi_Ayomide_coding certification.jpg",
+                "title": "Backend Development",
+                "description": "Create endpoint for Task Management System CRUD API'S",
+                "priority": "HIGH",
+                "status": "COMPLETED",
+                "dueDate": "2025-04-10T00:00:00.000Z",
+                "createdAt": "2025-04-06T00:59:03.000Z",
+                "updatedAt": "2025-04-06T01:11:45.000Z",
+                "deletedAt": null,
+                "assignee": {
+                    "id": 5,
+                    "firstName": "User3",
+                    "lastName": "Task",
+                    "isAdmin": false,
+                    "isRegular": true
+                }
+            },
+            {
+                "id": 13,
+                "assigneeId": 5,
+                "creatorId": 4,
+                "image": "image-1743901141646-Adeyemi_Ayomide_coding certification.jpg",
+                "title": "Backend Development",
+                "description": "Create endpoint for Task Management System CRUD API'S",
+                "priority": "HIGH",
+                "status": "COMPLETED",
+                "dueDate": "2025-04-10T00:00:00.000Z",
+                "createdAt": "2025-04-06T00:59:01.000Z",
+                "updatedAt": "2025-04-06T01:11:41.000Z",
+                "deletedAt": null,
+                "assignee": {
+                    "id": 5,
+                    "firstName": "User3",
+                    "lastName": "Task",
+                    "isAdmin": false,
+                    "isRegular": true
+                }
+            },
+            {
+                "id": 12,
+                "assigneeId": 5,
+                "creatorId": 4,
+                "image": "image-1743901140328-Adeyemi_Ayomide_coding certification.jpg",
+                "title": "Backend Development",
+                "description": "Create endpoint for Task Management System CRUD API'S",
+                "priority": "HIGH",
+                "status": "COMPLETED",
+                "dueDate": "2025-04-10T00:00:00.000Z",
+                "createdAt": "2025-04-06T00:59:00.000Z",
+                "updatedAt": "2025-04-06T01:11:37.000Z",
+                "deletedAt": null,
+                "assignee": {
+                    "id": 5,
+                    "firstName": "User3",
+                    "lastName": "Task",
+                    "isAdmin": false,
+                    "isRegular": true
+                }
+            },
+            {
+                "id": 11,
+                "assigneeId": 5,
+                "creatorId": 4,
+                "image": "image-1743901138720-Adeyemi_Ayomide_coding certification.jpg",
+                "title": "Backend Development",
+                "description": "Create endpoint for Task Management System CRUD API'S",
+                "priority": "HIGH",
+                "status": "COMPLETED",
+                "dueDate": "2025-04-10T00:00:00.000Z",
+                "createdAt": "2025-04-06T00:58:58.000Z",
+                "updatedAt": "2025-04-06T01:11:32.000Z",
+                "deletedAt": null,
+                "assignee": {
+                    "id": 5,
+                    "firstName": "User3",
+                    "lastName": "Task",
+                    "isAdmin": false,
+                    "isRegular": true
+                }
+            }
+        ],
+        "pagination": {
+            "limit": 10,
+            "page": 1,
+            "pages": 1,
+            "rows": 4
+        }
+    }
+}
+
+
 
 ---
 
-## 🔗 Full Postman API Reference
+### **Delete Task**
+**DELETE** `/users/tasks/:/delete`
 
-For complete request examples and responses, visit the postman full docs:  
-👉 [Postman Docs](https://documenter.getpostman.com/view/28637839/2sB2cUBi1F)
+#### 🔸 Request
+```js
+{
+  "id": 14
+}
+````
+
+#### ✅ Response
+
+```json
+{
+  "success": true,
+  "message": "Task deleted successfully"
+}
+```
+
+---
+
+## 🛡️ Admin Endpoints
+
+### **Get All Tasks**
+
+**GET** `/admins/tasks`
+
+#### 🔸 Query Parameters
+
+```js
+{
+  "q[status]": "TODO",
+  "q[priority]": "HIGH",
+  "q[dueDate]": "2025-04-10",
+  "order[createdAt]": "DESC",
+  "page": 1,
+  "limit": 10
+}
+```
+
+#### ✅ Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "tasks": [
+      {
+        "id": 14,
+        "assigneeId": 5,
+        "creatorId": 4,
+        "image": "image-1743901143059-Adeyemi_Ayomide_coding certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "HIGH",
+        "status": "COMPLETED",
+        "dueDate": "2025-04-10T00:00:00.000Z",
+        "createdAt": "2025-04-06T00:59:03.000Z",
+        "updatedAt": "2025-04-06T01:11:45.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 4,
+          "firstName": "User2",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        },
+        "assignee": {
+          "id": 5,
+          "firstName": "User3",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        }
+      },
+      {
+        "id": 13,
+        "assigneeId": 5,
+        "creatorId": 4,
+        "image": "image-1743901141646-Adeyemi_Ayomide_coding certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "HIGH",
+        "status": "COMPLETED",
+        "dueDate": "2025-04-10T00:00:00.000Z",
+        "createdAt": "2025-04-06T00:59:01.000Z",
+        "updatedAt": "2025-04-06T01:11:41.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 4,
+          "firstName": "User2",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        },
+        "assignee": {
+          "id": 5,
+          "firstName": "User3",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        }
+      },
+      {
+        "id": 12,
+        "assigneeId": 5,
+        "creatorId": 4,
+        "image": "image-1743901140328-Adeyemi_Ayomide_coding certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "HIGH",
+        "status": "COMPLETED",
+        "dueDate": "2025-04-10T00:00:00.000Z",
+        "createdAt": "2025-04-06T00:59:00.000Z",
+        "updatedAt": "2025-04-06T01:11:37.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 4,
+          "firstName": "User2",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        },
+        "assignee": {
+          "id": 5,
+          "firstName": "User3",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        }
+      },
+      {
+        "id": 11,
+        "assigneeId": 5,
+        "creatorId": 4,
+        "image": "image-1743901138720-Adeyemi_Ayomide_coding certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "HIGH",
+        "status": "COMPLETED",
+        "dueDate": "2025-04-10T00:00:00.000Z",
+        "createdAt": "2025-04-06T00:58:58.000Z",
+        "updatedAt": "2025-04-06T01:11:32.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 4,
+          "firstName": "User2",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        },
+        "assignee": {
+          "id": 5,
+          "firstName": "User3",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        }
+      },
+      {
+        "id": 10,
+        "assigneeId": null,
+        "creatorId": 3,
+        "image": "image-1743886498875-Adeyemi_Ayomide_coding certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "HIGH",
+        "status": "TODO",
+        "dueDate": "2025-04-10T00:00:00.000Z",
+        "createdAt": "2025-04-05T20:54:58.000Z",
+        "updatedAt": "2025-04-05T20:54:58.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 3,
+          "firstName": "User1",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        },
+        "assignee": null
+      },
+      {
+        "id": 9,
+        "assigneeId": null,
+        "creatorId": 3,
+        "image": "image-1743886497793-Adeyemi_Ayomide_coding certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "HIGH",
+        "status": "TODO",
+        "dueDate": "2025-04-10T00:00:00.000Z",
+        "createdAt": "2025-04-05T20:54:57.000Z",
+        "updatedAt": "2025-04-05T20:54:57.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 3,
+          "firstName": "User1",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        },
+        "assignee": null
+      },
+      {
+        "id": 6,
+        "assigneeId": null,
+        "creatorId": 3,
+        "image": "image-1743886493397-Adeyemi_Ayomide_coding certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "HIGH",
+        "status": "COMPLETED",
+        "dueDate": "2025-04-10T00:00:00.000Z",
+        "createdAt": "2025-04-05T20:54:53.000Z",
+        "updatedAt": "2025-04-06T01:32:18.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 3,
+          "firstName": "User1",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        },
+        "assignee": null
+      },
+      {
+        "id": 5,
+        "assigneeId": 7,
+        "creatorId": 3,
+        "image": "image-1743886492477-Adeyemi_Ayomide_coding certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "HIGH",
+        "status": "COMPLETED",
+        "dueDate": "2025-04-10T00:00:00.000Z",
+        "createdAt": "2025-04-05T20:54:52.000Z",
+        "updatedAt": "2025-04-06T01:32:05.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 3,
+          "firstName": "User1",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        },
+        "assignee": {
+          "id": 7,
+          "firstName": "User5",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        }
+      },
+      {
+        "id": 4,
+        "assigneeId": 8,
+        "creatorId": 3,
+        "image": "image-1743886491565-Adeyemi_Ayomide_coding certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "HIGH",
+        "status": "COMPLETED",
+        "dueDate": "2025-04-10T00:00:00.000Z",
+        "createdAt": "2025-04-05T20:54:51.000Z",
+        "updatedAt": "2025-04-06T01:32:00.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 3,
+          "firstName": "User1",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        },
+        "assignee": {
+          "id": 8,
+          "firstName": "User6",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        }
+      },
+      {
+        "id": 3,
+        "assigneeId": 8,
+        "creatorId": 3,
+        "image": "image-1743886490641-Adeyemi_Ayomide_coding certification.jpg",
+        "title": "Backend Development",
+        "description": "Create endpoint for Task Management System CRUD API'S",
+        "priority": "HIGH",
+        "status": "COMPLETED",
+        "dueDate": "2025-04-10T00:00:00.000Z",
+        "createdAt": "2025-04-05T20:54:50.000Z",
+        "updatedAt": "2025-04-06T01:31:56.000Z",
+        "deletedAt": null,
+        "creator": {
+          "id": 3,
+          "firstName": "User1",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        },
+        "assignee": {
+          "id": 8,
+          "firstName": "User6",
+          "lastName": "Task",
+          "isAdmin": false,
+          "isRegular": true
+        }
+      }
+    ],
+    "pagination": {
+      "limit": 10,
+      "page": 1,
+      "pages": 2,
+      "rows": 12
+    }
+  }
+}
+```
+
+---
+
+### **Assign Task**
+
+**POST** `/admins/tasks/:id/assign`
+
+#### 🔸 Request Body
+
+```json
+{
+  "assigneeId": 4
+}
+```
+
+#### ✅ Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "task": {
+      "id": 2,
+      "assigneeId": 4,
+      "creatorId": 3,
+      "image": "image-1743886489393-Adeyemi_Ayomide_coding certification.jpg",
+      "title": "Backend Development",
+      "description": "Create endpoint for Task Management System CRUD API'S",
+      "priority": "HIGH",
+      "status": "TODO",
+      "dueDate": "2025-04-10T00:00:00.000Z",
+      "createdAt": "2025-04-05T20:54:49.000Z",
+      "updatedAt": "2025-04-06T01:31:14.000Z",
+      "deletedAt": null
+    },
+    "message": "Email notification sent successfully to User6 Task"
+  }
+}
+```
+
+---
+
+### **Get Ranking Summary**
+
+**GET** `/rank-summary`
+
+#### 🔸 Query Parameters
+
+```js
+{
+  "page": 1,
+  "limit": 10
+}
+```
+
+#### ✅ Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "completedTasksByCreator": [
+      {
+        "firstName": "User2",
+        "lastName": "Task",
+        "completedTasks": 5,
+        "totalTasks": 5,
+        "completionRate": "100",
+        "rank": 1
+      },
+      {
+        "firstName": "User3",
+        "lastName": "Task",
+        "completedTasks": 4,
+        "totalTasks": 4,
+        "completionRate": "100",
+        "rank": 2
+      },
+      {
+        "firstName": "User6",
+        "lastName": "Task",
+        "completedTasks": 3,
+        "totalTasks": 3,
+        "completionRate": "100",
+        "rank": 3
+      },
+      {
+        "firstName": "User5",
+        "lastName": "Task",
+        "completedTasks": 1,
+        "totalTasks": 1,
+        "completionRate": "100",
+        "rank": 4
+      },
+      {
+        "firstName": "User1",
+        "lastName": "Task",
+        "completedTasks": 6,
+        "totalTasks": 7,
+        "completionRate": "85.71",
+        "rank": 5
+      },
+      {
+        "firstName": "Admin1",
+        "lastName": "Task",
+        "completedTasks": 0,
+        "totalTasks": 0,
+        "completionRate": "0",
+        "rank": 6
+      },
+      {
+        "firstName": "Admin2",
+        "lastName": "Task",
+        "completedTasks": 0,
+        "totalTasks": 0,
+        "completionRate": "0",
+        "rank": 6
+      },
+      {
+        "firstName": "User4",
+        "lastName": "Task",
+        "completedTasks": 0,
+        "totalTasks": 0,
+        "completionRate": "0",
+        "rank": 6
+      }
+    ],
+    "pagination": {
+      "total": 8,
+      "pages": 1,
+      "page": 1,
+      "rows": 8
+    }
+  }
+}
+```
 
 ---
 
@@ -441,7 +1057,7 @@ For complete request examples and responses, visit the postman full docs:
 ### Architecture
 
 - The application follows a Model-View-Controller (MVC) architecture to separate concerns and improve maintainability.
-- Sequelize ORM is used for database interactions, providing a simple and powerful way to manage database models.
+- Sequelize ORM is used for database interactions, providing a simple and powerful way to manage database models by using classes to extend the data access object (DAO) pattern.
 
 ### Database Design
 
@@ -458,7 +1074,7 @@ For complete request examples and responses, visit the postman full docs:
 - Environment variables are used to store sensitive information such as database credentials and secure keys.
 - Input validation and sanitization are implemented to prevent SQL injection and other security vulnerabilities.
 
-## Unit Tests
+## Integration Tests
 
 ### Testing Framework
 
@@ -468,9 +1084,8 @@ For complete request examples and responses, visit the postman full docs:
 
 To run the integration tests, execute the following command:
 
-```bash
+bash
 npm test
-```
 
 ### Coverage
 
@@ -488,7 +1103,7 @@ The tests case is in the **tests** directory.
 
 ### Example Test Case
 
-```test
+```js
 const request = require("supertest");
 const express = require("express");
 const multer = require("multer");
@@ -508,7 +1123,7 @@ const mockMulter = multer().single("image");
 // Mock API routes
 app.post("/tasks", mockMulter, userTasksController.create);
 
-// Fix: Ensure `joi` is required inside the mock function
+// Fix: Ensure joi is required inside the mock function
 jest.mock("../../lib/helpers/valid", () => {
   const joi = require("joi");
   return {
@@ -554,8 +1169,6 @@ describe("Task API", () => {
       .field("dueDate", "2025-04-10")
       .attach("image", path.resolve(__dirname, "../../images/test-image.jpg"));
 
-    // console.log("Response body.............:", response.body);
-
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
     expect(response.body.data.task).toHaveProperty("id");
@@ -574,13 +1187,13 @@ describe("Task API", () => {
 
 To filter tasks by priority, due date and status, use the following query parameters:
 
-- `q[priority]`: Filter tasks by priority (LOW, MEDIUM, HIGH).
-- `q[dueDate]`: Filter tasks by due date.
-- `q[status]`: Filter tasks by status (TODO, IN_PROGRESS, COMPLETED).
+- q[priority]: Filter tasks by priority (LOW, MEDIUM, HIGH).
+- q[dueDate]: Filter tasks by due date.
+- q[status]: Filter tasks by status (TODO, IN_PROGRESS, COMPLETED).
 
 To sort tasks by createdAt, use the following query parameters:
 
-- `order[createdAt]`: Sort tasks by createdAt (ASC, DESC).
+- order[createdAt]: Sort tasks by createdAt (ASC, DESC).
 
 ## Field Validation Rules
 
