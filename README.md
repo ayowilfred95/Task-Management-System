@@ -80,7 +80,7 @@ npm install
 
 4. **Configure Environment Variables**
 
-Create a `.env` file in the root directory and add the environment variables listed [here](#environment-variables).
+Create a `.env` file in the root directory and add the environment variables listed [here](#⚙️-environment-variables).
 
 5. **Run Migrations**
 
