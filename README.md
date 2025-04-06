@@ -1,6 +1,6 @@
 # 📝 Task Management System
 
-A web application that enables users and admins to efficiently create, manage, assign, and track tasks. This document includes setup instructions, API documentation, workflows, and design decisions.
+A Task Management API that allows users to create, update, delete, and track tasks. The system should support multiple users, authentication, task assignment, status updates, priority levels, and image uploads.
 
 ---
 
