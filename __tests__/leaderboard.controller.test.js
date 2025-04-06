@@ -43,9 +43,9 @@ jest.mock("../src/dao", () => ({
             completionRate: 100,
             totalTasks: 10,
             rank: 3,
-          }
+          },
         ],
-        pagination: { total: 3 }, 
+        pagination: { total: 3 },
       })
     ),
   },

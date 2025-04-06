@@ -11,14 +11,13 @@ app.use(express.json());
 const mockMulter = multer().single("image");
 
 // Mock API routes
-
 app.put("/tasks/:id", mockMulter, adminTasksController.update);
 app.delete("/tasks/:id", adminTasksController.delete);
 app.get("/tasks/:id", adminTasksController.getOne);
 app.get("/tasks", adminTasksController.getAll);
 app.put("/tasks/:id/update-status", adminTasksController.updateStatus);
 
-// Fix: Ensure `joi` is required inside the mock function
+// Mock joi helper
 jest.mock("../../lib/helpers/valid", () => {
   const joi = require("joi");
   return {
@@ -29,15 +28,43 @@ jest.mock("../../lib/helpers/valid", () => {
   };
 });
 
-// Mock TaskDAO methods
+// Shared mock task (mutable for test updates)
+let mockTask = {
+  id: 1,
+  title: "Test Task",
+  description: "A test task",
+  priority: "LOW",
+  dueDate: "2025-04-15",
+  status: "TODO",
+  creatorId: 1,
+};
+
+// Reset mock task before each test
+beforeEach(() => {
+  mockTask = {
+    id: 1,
+    title: "Test Task",
+    description: "A test task",
+    priority: "LOW",
+    dueDate: "2025-04-15",
+    status: "TODO",
+    creatorId: 1,
+  };
+});
+
+// Mock TaskDAO
 jest.mock("../../src/dao", () => ({
   TaskDAO: {
     fetchOne: jest.fn((query) =>
-      Promise.resolve(query.id === 1 ? { id: 1, title: "Test Task" } : null)
+      Promise.resolve(query.id === 1 ? mockTask : null)
     ),
-    update: jest.fn((updates, query) =>
-      Promise.resolve({ id: query.id, ...updates })
-    ),
+    update: jest.fn((updates, query) => {
+      if (query.id === 1) {
+        mockTask = { ...mockTask, ...updates };
+        return Promise.resolve(mockTask);
+      }
+      return Promise.resolve(null);
+    }),
     delete: jest.fn(() => Promise.resolve()),
     fetchAll: jest.fn(() =>
       Promise.resolve({
@@ -108,6 +135,7 @@ describe("Task Controller Tests", () => {
   });
 
   test("Admin should delete a task successfully", async () => {
+    mockTask.status = "TODO"; // ensure status is deletable
     const response = await request(app).delete("/tasks/1");
 
     expect(response.status).toBe(200);
@@ -120,5 +148,25 @@ describe("Task Controller Tests", () => {
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
     expect(response.body.data.tasks.length).toBeGreaterThan(0);
+  });
+
+  test("Admin should not be able to delete a task with status in progress", async () => {
+    // Set task status to IN_PROGRESS via update route
+    const response = await request(app)
+      .put("/tasks/1/update-status")
+      .send({ status: "IN_PROGRESS" });
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.data.task.status).toBe("IN_PROGRESS");
+
+    // Try deleting task
+    const deleteResponse = await request(app).delete("/tasks/1");
+
+    expect(deleteResponse.status).toBe(500);
+    expect(deleteResponse.body.success).toBe(false);
+    expect(deleteResponse.body.message).toBe(
+      "Task cannot be deleted when it is in progress"
+    );
   });
 });

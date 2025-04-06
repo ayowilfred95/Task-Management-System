@@ -1,5 +1,6 @@
 const joi = require("joi");
 const {
+  appError,
   notFoundError,
   validationError,
   apiResponse,
@@ -151,7 +152,7 @@ exports.delete = async (req, res) => {
     const id = parseInt(req.params.id);
     const task = await TaskDAO.fetchOne({ id, creatorId: userId });
     if (!task) throw notFoundError("Task not found or does not belong to this user");
-    if (task.status === "IN_PROGRESS") throw validationError("Task cannot be deleted when it is in progress");
+    if (task.status === "IN_PROGRESS") throw appError("Task cannot be deleted when it is in progress");
     await TaskDAO.delete({ id });
     return apiResponse(res, {
       success: true,

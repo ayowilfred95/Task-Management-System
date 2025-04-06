@@ -79,11 +79,6 @@ The Task Management System is a web application designed to help users manage th
 8. **Access the Application**
    Open your browser and navigate to `http://localhost:4000`.
 
-## API Documentation
-
-### Base URL
-
-`http://localhost:4000/api`
 
 ### Endpoints
 
@@ -106,6 +101,13 @@ The **Task Management System API** is a RESTful API designed to streamline task 
 - **User Tasks**: Users can manage their own task lifecycle — from creation to deletion.
 - **Authentication**: Role-based access using token authentication.
 - **Admin Oversight**: Admins can manage platform users and inspect any user's tasks.
+
+---
+
+## 🔗 Full Postman API Reference
+Postman was used to document the API.
+For complete request examples and responses,please visit the postman full docs:  
+👉 [Postman Docs](https://documenter.getpostman.com/view/28637839/2sB2cUBi1F)
 
 ---
 
@@ -486,7 +488,7 @@ The tests case is in the **tests** directory.
 
 ### Example Test Case
 
-```javascript
+```test
 const request = require("supertest");
 const express = require("express");
 const multer = require("multer");
