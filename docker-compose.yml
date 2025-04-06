@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: task_management_mysql_db
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+    ports:
+      - "3306:3306"
+    volumes:
+      - task_management_mysql_data:/var/lib/mysql
+    networks:
+      - task_management_network
+
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: task_management_phpmyadmin
+    environment:    
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: ${DB_USER}
+      PMA_PASSWORD: ${DB_PASS}
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    networks:
+      - task_management_network
+
+
+networks:
+  task_management_network:
+    driver: bridge
+
+volumes:
+  task_management_mysql_data:
