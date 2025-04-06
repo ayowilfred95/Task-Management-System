@@ -80,7 +80,20 @@ npm install
 
 4. **Configure Environment Variables**
 
-Create a `.env` file in the root directory and add the environment variables listed [here](#⚙️-environment-variables).
+Create a `.env` file in the root directory and add the environment variables listed below.
+
+```env
+APP_PORT=4000
+APP_SECURE_KEY=taskmanagement123@#$%!!*&*&^$#etc
+DB_USER=task-management
+DB_PASS=task-management
+DB_NAME=task-management
+DB_HOST=localhost
+DB_CHARSET=utf8mb4
+DB_COLLATE=utf8mb4_unicode_ci
+```
+
+> You can adjust these based on your local or cloud database config.
 
 5. **Run Migrations**
 
@@ -101,23 +114,6 @@ npm run start
 ```
 
 Visit: `http://localhost:4000`
-
----
-
-## ⚙️ Environment Variables
-
-```env
-APP_PORT=4000
-APP_SECURE_KEY=taskmanagement123@#$%!!*&*&^$#etc
-DB_USER=task-management
-DB_PASS=task-management
-DB_NAME=task-management
-DB_HOST=localhost
-DB_CHARSET=utf8mb4
-DB_COLLATE=utf8mb4_unicode_ci
-```
-
-> You can adjust these based on your local or cloud database config.
 
 ---
 ### Folder Structure
