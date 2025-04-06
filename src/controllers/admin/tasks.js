@@ -15,7 +15,9 @@ exports.getAll = async (req, res) => {
     let where;
     let { values: params } = valid.query(req.query, {
       q: joi.any(),
-      order: joi.any(),
+      order: {
+        createdAt: joi.valid("ASC", "DESC"),
+      },
       page: valid.number(),
       limit: valid.number(),
     });
@@ -295,12 +297,15 @@ exports.getAssignTasksToUser = async (req, res) => {
     order = order ? { ...order, ...defaultOrder } : defaultOrder;
 
     let include = ["creator", "assignee"];
-    const {data:tasks, pagination} = await TaskDAO.fetchAll({ assigneeId: id },{
-      include,
-      order,
-      page: params.page,
-      limit: params.limit ?? 10,
-    });
+    const { data: tasks, pagination } = await TaskDAO.fetchAll(
+      { assigneeId: id },
+      {
+        include,
+        order,
+        page: params.page,
+        limit: params.limit ?? 10,
+      }
+    );
     const response = {
       tasks,
       pagination,

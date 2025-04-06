@@ -120,6 +120,75 @@ DB_COLLATE=utf8mb4_unicode_ci
 > You can adjust these based on your local or cloud database config.
 
 ---
+### Folder Structure
+
+```
+Task-Management-System/
+├── .dockerignore                                       # Docker ignore file
+├── .env                                                # Environment variables
+├── .gitignore                                          # Git ignore file
+├── .sequelizerc                                        # Sequelize configuration
+├── README.md                                           # Project documentation
+├── __tests__/                                          # Test files
+│   ├── leaderboard.controller.test.js
+│   ├── admin/
+│   │   └── admin-tasks.controller.test.js
+│   └── user/
+│       └── user-tasks.controller.test.js
+├── config/                                               # Configuration files
+│   ├── index.js
+│   └── sequelize.js
+├── db/                                                   # Database migration
+│   └── migrations/
+│       ├── 20250401154828-add-users-table.js
+│       └── 20250402080238-add-tasks-table.js
+├── docker-compose.yml                                    # Docker configuration
+├── images/                                               # Task images
+├── index.js                                              # Main application file
+├── jest.config.js                                        # Jest configuration
+├── lib/                                                  # Library files
+├── node_modules/                                         # Node dependencies
+├── package-lock.json                                     # Package lock
+├── package.json                                          # Package configuration
+└── src/                                                  # Source files
+    ├── controllers/                                      # Controller files
+    │   ├── admin/
+    │   │   └── tasks.js
+    │   ├── user/
+    │   │   └── tasks.js
+    │   ├── auth.js
+    │   └── leaderboard.js
+    ├── dao/                                              # Data Access Object
+    │   ├── base-dao.js
+    │   ├── index.js
+    │   ├── task.js
+    │   └── user.js
+    ├── middlewares/                                      # Middleware files
+    │   ├── authGuards.js
+    │   └── roleGuards.js
+    ├── models/                                           # Database models
+    │   ├── index.js
+    │   ├── task.js
+    │   └── user.js
+    ├── routes/                                           # Route files
+    │   ├── index.js
+    │   └── v1/
+    └── services/                                         # Service files
+    │   ├── auth.js
+    │   ├── index.js
+    │   └── multer.js
+    ├── routes/
+    │   ├── index.js
+    │   └── v1/
+              |__ admin/
+              |__ user/
+              |__ auth/   
+              |__ leaderboard.routes.js
+              |__ auth.routes.js
+              |__ index.js   
+```
+
+---
 
 ## 📘 API Documentation
 
@@ -1098,60 +1167,6 @@ The tests case is in the **tests** directory.
 ### Example Test Case
 
 ```js
-const request = require("supertest");
-const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const userTasksController = require("../src/controllers/user/tasks");
-const app = express();
-app.use(express.json());
-
-// ✅ Middleware to simulate authenticated user
-app.use((req, res, next) => {
-  req.userId = 1;
-  next();
-});
-
-const mockMulter = multer().single("image");
-
-// Mock API routes
-app.post("/tasks", mockMulter, userTasksController.create);
-
-// Fix: Ensure joi is required inside the mock function
-jest.mock("../../lib/helpers/valid", () => {
-  const joi = require("joi");
-  return {
-    string: jest.fn(() => joi.string()),
-    longString: () => joi.string().min(10).required(),
-    date: jest.fn(() => joi.date()),
-    number: jest.fn(() => joi.number()),
-    query: jest.fn((query, schema) => ({ values: query })),
-  };
-});
-
-// Mock TaskDAO methods
-jest.mock("../../src/dao", () => ({
-  TaskDAO: {
-    create: jest.fn((task) => Promise.resolve({ id: 1, ...task })),
-    fetchOne: jest.fn((query) =>
-      Promise.resolve(query.id === 1 ? { id: 1, title: "Test Task" } : null)
-    ),
-    update: jest.fn((updates, query) =>
-      Promise.resolve({ id: query.id, ...updates })
-    ),
-    delete: jest.fn(() => Promise.resolve()),
-    fetchAll: jest.fn(() =>
-      Promise.resolve({
-        data: [
-          { id: 1, title: "Task 1" },
-          { id: 2, title: "Task 2" },
-        ],
-        pagination: { total: 2 },
-      })
-    ),
-  },
-}));
-
 describe("Task API", () => {
   test("should create a task successfully", async () => {
     const response = await request(app)

@@ -63,7 +63,8 @@ exports.update = async (req, res) => {
     const userId = req.userId;
     const id = parseInt(req.params.id);
     const task = await TaskDAO.fetchOne({ id, creatorId: userId });
-    if (!task) throw notFoundError("Task not found or does not belong to this user");
+    if (!task)
+      throw notFoundError("Task not found or does not belong to this user");
     const validator = joi.object({
       title: valid.string("Title").required(),
       description: valid.string("Description").required(),
@@ -151,8 +152,10 @@ exports.delete = async (req, res) => {
     const userId = req.userId;
     const id = parseInt(req.params.id);
     const task = await TaskDAO.fetchOne({ id, creatorId: userId });
-    if (!task) throw notFoundError("Task not found or does not belong to this user");
-    if (task.status === "IN_PROGRESS") throw appError("Task cannot be deleted when it is in progress");
+    if (!task)
+      throw notFoundError("Task not found or does not belong to this user");
+    if (task.status === "IN_PROGRESS")
+      throw appError("Task cannot be deleted when it is in progress");
     await TaskDAO.delete({ id });
     return apiResponse(res, {
       success: true,
@@ -270,13 +273,18 @@ exports.assign = async (req, res) => {
       throw validationError(validated.error.details[0].message);
     const { assigneeId } = validated.value;
 
-    const assignee = await UserDAO.fetchOne({ id: assigneeId , isRegular: true});
+    const assignee = await UserDAO.fetchOne({
+      id: assigneeId,
+      isRegular: true,
+    });
     if (!assignee) throw notFoundError("user does not exist");
     if (assignee.id === userId)
       throw validationError("user cannot assign task to himself");
 
     if (task.status === "COMPLETED")
-      throw validationError("Task is already completed and cannot be re-assigned");
+      throw validationError(
+        "Task is already completed and cannot be re-assigned"
+      );
 
     const updatedTask = await TaskDAO.update({ assigneeId }, { id });
     mockNotification(assigneeId, id);
